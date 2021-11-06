@@ -1,0 +1,131 @@
+<div class="container-fluid">
+  <div class="row">
+    <mat-toolbar>
+      <button mat-icon-button color="primary" matTooltip="Rectangle" (click)="drawShape('Rectangle')">
+        <fa-icon [icon]="faVectorSquare"></fa-icon>
+      </button>
+      <!-- <button mat-icon-button  color="primary"  matTooltip="Circle" (click)="drawShape('Circle')">
+                <fa-icon [icon]="faCircle"></fa-icon>
+              </button> -->
+      <button mat-icon-button color="primary" matTooltip="Poly Line" (click)="drawShape('PolyLine')">
+        <fa-icon [icon]="faDrawPolygon"></fa-icon>
+      </button>
+      <button mat-icon-button color="primary" matTooltip="Line Arrow" (click)="drawShape('LineArrow')">
+        <fa-icon [icon]="faArrowRight"></fa-icon>
+      </button>
+      <button mat-icon-button color="primary" matTooltip="Text" (click)="drawShape('Text')">
+        <fa-icon [icon]="faTextHeight"></fa-icon>
+      </button>
+      <button mat-icon-button color="primary" matTooltip="Free Hand" (click)="drawShape('pencil')">
+        <fa-icon [icon]="faPencilAlt"></fa-icon>
+      </button>
+      <button mat-icon-button color="primary" matTooltip="Free Hand" (click)="drawShape('pencilBrush')">
+        FREE
+      </button>
+      <!-- <button mat-icon-button  color="primary"  matTooltip="Text" (click)="edit($event)">
+                EDIT
+              </button> -->
+    </mat-toolbar>
+  </div>
+  <div class="row">
+    <div class="col">
+      two
+      <div [formGroup]="shapesGroup">
+        <mat-form-field appearance="fill">
+          <mat-label>Stroke Color (Default color is RED)</mat-label>
+          <mat-select formControlName="customColor" (selectionChange)="selectStrokeColor($event)">
+            <mat-option value="red">Red</mat-option>
+            <mat-option value="green">Green</mat-option>
+            <mat-option value="blue">Blue</mat-option>
+            <mat-option value="black">Black</mat-option>
+            <mat-option value="#ADFF2F">GreenYellow</mat-option>
+            <mat-option value="orangered">OrangeRed</mat-option>
+            <mat-option value="blueviolet">BlueViolet</mat-option>
+            <mat-option value="white">White</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <button mat-icon-button class="tile" color="primary " matTooltip="Tile 1" (click)="selectTile(0)">
+        Select Tile 1
+      </button>
+      <button mat-icon-button class="tile" color="primary" matTooltip="Tile 2" (click)="selectTile(1)">
+        Select Tile 2
+      </button>
+      <button mat-icon-button class="tile" color="primary" matTooltip="Reset" (click)="resetRotation()">
+        Reset Tile
+      </button>
+      <button mat-icon-button class="tile" color="primary" matTooltip="Remove shape" (click)="rotateShape()">
+        ROTATE
+      </button>
+      <button mat-icon-button class="tile" color="primary" matTooltip="Remove shape" (click)="newCoordinate()">
+        New cordinate
+      </button>
+      <div>
+        <mat-label>Tile Rotate : {{rotateValue}}</mat-label><br />
+        <mat-slider class="example-margin" [disabled]="sliderDisabled" [max]="rotateMax" [min]="rotateMin"
+          [step]="rotateStep" [(ngModel)]="rotateValue" (click)="rotateSlider()" [vertical]="sliderVertical">
+        </mat-slider>
+      </div>
+    </div>
+
+    <div class="col-6 justify-content-md-center">
+      <!-- (mousedown)="osdMouseDown($event)" (mouseup)="osdMouseUp($event)" -->
+      <div id="openseadragon-holder" style="width: 750px; height: 600px;" (click)="clk($event)"
+        (click)="osdMouseClick($event)" (dblclick)="osdMouseDoubleClick($event)" (mousemove)="osdMouseMove($event)"
+        (mousedown)="osdMouseDown($event)" (mouseup)="osdMouseUp($event)">
+      </div>
+      <!-- <canvas id="freeDraw" style="width: 750px; height: 600px;"></canvas> -->
+      <!-- <div id="openseadragon-holder1" style="width: 750px; height: 600px;"> 
+            </div> -->
+    </div>
+
+    <div class="col">
+      <div *ngIf="getData">dasfa {{getData.length}}</div>
+
+
+      <div *ngIf="getData">
+        <div class="detail" *ngIf="getData.length >= 1">
+          <mat-card>
+            <mat-list *ngFor="let data of getData; index as i">
+              <mat-list-item (click)="selectItem(getData[i], i)">
+                <span> {{i}}</span>
+                <span *ngIf="getData[i].type === 'Rect'">
+                  <fa-icon [icon]="faVectorSquare" [style.color]=getData[i].stroke></fa-icon>
+                </span>
+                <span *ngIf="getData[i].type === 'circle'">
+                  <fa-icon [icon]="faCircle" [style.color]=getData[i].stroke></fa-icon>
+                </span>
+                <span *ngIf="getData[i].type === 'polyline'">
+                  <fa-icon [icon]="faDrawPolygon" [style.color]=getData[i].stroke></fa-icon>
+                </span>
+                <span *ngIf="getData[i].type === 'arrow'">
+                  <fa-icon [icon]="faArrowRight" [style.color]=getData[i].stroke></fa-icon>
+                </span>
+                <span *ngIf="getData[i].type === 'i-text'">
+                  <fa-icon [icon]="faTextHeight" [style.color]=getData[i].stroke></fa-icon>
+                </span>
+                <span *ngIf="getData[i].type === 'pencil'">
+                  <fa-icon [icon]="faPencilAlt" [style.color]=getData[i].stroke></fa-icon>
+                </span>
+                <ul>
+                  <!-- <li>shape Index : {{getData[i].id}}</li> -->
+                  <li>shape ID : {{getData[i].sid}}</li>
+                  <li>Type : {{getData[i].type}}</li>
+                </ul>
+                <button mat-icon-button class="del" color="primary" matTooltip="Remove shape"
+                  (click)="delete(getData[i].id, i)">
+                  <fa-icon [icon]="faTrashAlt" style="color: red;"></fa-icon>
+                </button>
+
+
+              </mat-list-item>
+              <mat-divider></mat-divider>
+            </mat-list>
+          </mat-card>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
